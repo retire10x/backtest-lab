@@ -6,6 +6,17 @@
 
 ---
 
+## 2026-08-11 16:55 (작성자: Claude Code)
+**한 일**: 로컬 git 초기화 후 GitHub 공개 저장소에 최초 푸시.
+  https://github.com/retire10x/backtest-lab (`main`, commit `20a3275`).
+  `.env` / `updater/.env` / `node_modules` / venv 는 커밋하지 않음.
+
+**왜**: 사용자 요청 — 배포·협업 전에 원격 백업부터.
+
+**결과/남은 이슈**: Supabase 프로젝트 생성·키 연결은 여전히 사용자 작업 대기.
+
+---
+
 ## 2026-08-11 16:30 (작성자: Claude Code)
 **한 일**: Cowork가 남긴 다음 작업 중 (2)(3)을 처리했다.
 - `updater/` 신규: WorkerAI 로직만 참고해 듀얼 모멘텀 신호·백테스트·워크포워드를
