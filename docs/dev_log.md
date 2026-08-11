@@ -6,6 +6,22 @@
 
 ---
 
+## 2026-08-11 17:20 (작성자: Claude Code)
+**한 일**: 사용자가 Supabase URL/키를 채운 뒤 최초 데이터 적재까지 완료.
+- `updater/run_update.py`로 3테이블 upsert 성공 (신호 2026-08-10 kospi, CAGR 15.2%).
+- publishable(anon) 키로 SELECT 검증 통과 (signal/summary/wf 9건).
+- 루트 `.env`에 있던 DB 비밀번호 항목은 사이트에 불필요해 제거(로컬만, 커밋 안 함).
+
+**왜**: 공개 사이트 연결용 키 세팅 후 DB를 비워 두면 페이지가 "데이터 없음"만 보임.
+
+**결과/남은 이슈**: Vercel 배포·도메인·SEO 미착수. Secret 키가 대화/파일 맥락에
+노출됐으므로 여유 있을 때 Supabase에서 secret 키 재발급 권장.
+
+**다음 담당자에게**: Vercel에 `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY`만
+넣고 배포하면 됨. service_role/secret 은 Vercel에 넣지 말 것.
+
+---
+
 ## 2026-08-11 16:55 (작성자: Claude Code)
 **한 일**: 로컬 git 초기화 후 GitHub 공개 저장소에 최초 푸시.
   https://github.com/retire10x/backtest-lab (`main`, commit `20a3275`).
