@@ -1,0 +1,166 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = '소액 개인 투자자를 위한, 검증 중심의 정직한 백테스트 정보 사이트.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title} · backtest-lab</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="container">
+        <a class="brand" href="/">backtest-lab</a>
+        <div class="links">
+          <a href="/strategy/dual-momentum">전략 소개</a>
+          <a href="/signal">이번 달 신호</a>
+          <a href="/backtest">백테스트 성과</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          backtest-lab은 무료로 제공되는 정보 사이트입니다. 1:1 투자 상담,
+          맞춤형 투자 자문, 실시간 매매 추천을 제공하지 않습니다.
+        </p>
+        <p>© {new Date().getFullYear()} backtest-lab</p>
+      </div>
+    </footer>
+
+    <style is:global>
+      :root {
+        color-scheme: light;
+        --fg: #1a1a1a;
+        --bg: #ffffff;
+        --muted: #6b6b6b;
+        --accent: #1a5cff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR',
+          sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      .site-header {
+        border-bottom: 1px solid #eee;
+        padding: 1rem 0;
+      }
+      .site-header nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .brand {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .links {
+        display: flex;
+        gap: 1rem;
+      }
+      .links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+      .links a:hover {
+        color: var(--accent);
+      }
+      main {
+        padding: 2.5rem 1.25rem 4rem;
+        min-height: 60vh;
+      }
+      .site-footer {
+        border-top: 1px solid #eee;
+        padding: 1.5rem 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem 0.6rem;
+        border-bottom: 1px solid #eee;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat-card {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 1rem;
+      }
+      .stat-card .label {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .stat-card .value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-top: 0.25rem;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .badge.positive {
+        background: #e6f4ea;
+        color: #1e7e34;
+      }
+      .badge.negative {
+        background: #fde8e8;
+        color: #b02a2a;
+      }
+      .badge.neutral {
+        background: #eee;
+        color: #555;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.env
+updater/.env
+.vercel/
+*.log
+__pycache__/
+*.pyc
+.venv/
+updater/.venv/

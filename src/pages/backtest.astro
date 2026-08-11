@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Disclaimer from '../components/Disclaimer.astro';
+import {
+  getLatestBacktestSummary,
+  getWalkForwardResults,
+  type BacktestSummary,
+  type WalkForwardResult,
+} from '../lib/supabase';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+
+function pct(v: number | null | undefined): string {
+  if (v === null || v === undefined) return '—';
+  return `${(v * 100).toFixed(1)}%`;
+}
+
+function badgeClass(v: number): string {
+  if (v > 0) return 'positive';
+  if (v < 0) return 'negative';
+  return 'neutral';
+}
+
+const summary: BacktestSummary | null = await getLatestBacktestSummary();
+const wf: WalkForwardResult[] = await getWalkForwardResults();
+---
+
+<BaseLayout
+  title="백테스트 성과"
+  description="코스피200 vs 국채3년물 듀얼 모멘텀 전략의 백테스트 성과: 연환산 수익률, 최대낙폭, 연도별 워크포워드 결과."
+>
+  <p><a href="/">← 홈으로</a></p>
+  <h1>백테스트 성과</h1>
+
+  {
+    !summary && (
+      <p style="color:var(--muted)">
+        아직 표시할 백테스트 데이터가 없습니다. (DB 연결 또는 최초 데이터
+        입력 전일 수 있습니다.)
+      </p>
+    )
+  }
+
+  {
+    summary && (
+      <>
+        <p style="color:var(--muted)">
+          검증 기간: {summary.period_start} ~ {summary.period_end}
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="label">연환산 수익률(CAGR)</div>
+            <div class="value">
+              <span class={`badge ${badgeClass(summary.cagr)}`}>{pct(summary.cagr)}</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="label">최대낙폭(MDD)</div>
+            <div class="value">
+              <span class="badge negative">{pct(summary.mdd)}</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="label">누적 총수익률</div>
+            <div class="value">
+              <span class={`badge ${badgeClass(summary.total_return)}`}>
+                {pct(summary.total_return)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <h2>3단 비교</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>연환산 수익률</th>
+              <th>MDD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>이 전략</td>
+              <td>{pct(summary.cagr)}</td>
+              <td>{pct(summary.mdd)}</td>
+            </tr>
+            <tr>
+              <td>패시브 벤치마크 (유동성 상위 종목 동일비중)</td>
+              <td>{pct(summary.passive_benchmark_cagr)}</td>
+              <td>{pct(summary.passive_benchmark_mdd)}</td>
+            </tr>
+            <tr>
+              <td>국내 저축은행 정기예금</td>
+              <td>{pct(summary.savings_bank_rate)}</td>
+              <td>0.0%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        {summary.verdict_note && (
+          <p>
+            <strong>정직한 평가:</strong> {summary.verdict_note}
+          </p>
+        )}
+      </>
+    )
+  }
+
+  {
+    wf.length > 0 && (
+      <>
+        <h2>연도별 워크포워드</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">
+          매년 초 자본을 리셋했다고 가정하고, 그 해에만 저축은행 금리(4%)를
+          넘었는지 표시합니다. 상회하지 못한 해도 그대로 보여드립니다.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>연도</th>
+              <th>수익률</th>
+              <th>MDD</th>
+              <th>저축은행 상회</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            {wf.map((row) => (
+              <tr>
+                <td>{row.year}</td>
+                <td>
+                  <span class={`badge ${badgeClass(row.annual_return)}`}>
+                    {pct(row.annual_return)}
+                  </span>
+                </td>
+                <td>{pct(row.mdd)}</td>
+                <td>{row.beats_savings_bank ? '상회' : '미달'}</td>
+                <td style="color:var(--muted);">{row.note || ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>
+    )
+  }
+
+  <Disclaimer />
+</BaseLayout>
