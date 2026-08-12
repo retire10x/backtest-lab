@@ -42,7 +42,10 @@ Supabase 키를 아직 설정하지 않아도 빌드는 됩니다 — 페이지�
 
 ## 3. 배포 (Vercel)
 
-저장소: https://github.com/retire10x/backtest-lab
+저장소: https://github.com/retire10x/backtest-lab  
+**일반 사용자용 공개 URL:** https://backtest-lab-rosy.vercel.app  
+(`…-xxxxx-….vercel.app`처럼 해시가 긴 주소는 배포 1회용이라 Vercel 로그인이
+걸릴 수 있음 — 공유할 때는 위 rosy 주소를 쓴다.)
 
 1. [vercel.com](https://vercel.com)에서 GitHub 저장소 Import  
    (또는 로컬: `npx vercel login` → `npx vercel --prod`).
@@ -55,6 +58,9 @@ Supabase 키를 아직 설정하지 않아도 빌드는 됩니다 — 페이지�
 5. 홈(`/`) 데이터가 `Cache-Control: s-maxage=3600` 이라 DB 갱신 후
    최대 약 1시간 안에 CDN에 반영됩니다. 배포 후 `/#history`에 12행이
    보이는지 확인하세요.
+6. Deployment Protection이 **Standard**면 프로덕션 도메인(rosy)은 공개,
+   배포별 해시 URL만 로그인 보호됩니다. 해시 URL을 열어 "Log in to Vercel"이
+   뜨는 것은 정상입니다.
 
 ## 4. 데이터 업데이트 (`updater/`)
 

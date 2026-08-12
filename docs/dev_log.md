@@ -6,6 +6,23 @@
 
 ---
 
+## 2026-08-12 16:35 (작성자: Claude Code)
+**한 일**: 사용자가 연 해시 배포 URL이 Vercel 로그인을 요구하는 원인을
+확인. 일반 공개 주소는 `https://backtest-lab-rosy.vercel.app` (HTTP 200,
+페이지 본문 확인). 해시 URL(`backtest-nxa31jtm3-…`)은 Deployment Protection
+대상이라 302→로그인 — 버그가 아님. README·`astro.config.mjs` site를
+rosy 주소로 갱신.
+
+**왜**: 지인 공유용으로 쓸 주소를 명확히 해야 함.
+
+**결과/남은 이슈**: 커스텀 도메인 연결은 선택. 보호 설정은 Standard 유지해도
+프로덕션 도메인은 공개.
+
+**다음 담당자에게 / 사용자**: 공유·확인은 항상
+https://backtest-lab-rosy.vercel.app 를 쓸 것.
+
+---
+
 ## 2026-08-12 14:00 (작성자: Claude Code)
 **한 일**: Cowork 정정에 맞게 토글을 "섹션 숨김" → "문체 전환"으로 재작업.
 - 신호/12개월 표/백테스트 카드·비교표·연도표/규칙 리스트는 **항상 노출**

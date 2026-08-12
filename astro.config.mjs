@@ -10,5 +10,5 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: { enabled: false },
   }),
-  site: 'https://example.com', // TODO: 실제 도메인 연결 후 수정
+  site: 'https://backtest-lab-rosy.vercel.app',
 });
