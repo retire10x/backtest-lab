@@ -60,6 +60,13 @@ def parse_args() -> argparse.Namespace:
         help="DB에 쓰지 않고 계산 결과만 출력",
     )
     p.add_argument(
+        "--signal-history-months",
+        type=int,
+        default=12,
+        help="monthly_signals 테이블에 채울 최근 월말 신호 개수(사이트의 "
+        "'최근 12개월 비교' 섹션이 쓰는 행 수)",
+    )
+    p.add_argument(
         "--env-file",
         default=str(ROOT / ".env"),
         help="SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 가 있는 env 파일",
@@ -123,8 +130,10 @@ def main() -> int:
     )
     print_report(result)
 
-    payload = upsert_payload(result)
-    print("\n--- upsert 페이로드(미리보기) ---")
+    payload = upsert_payload(result, signal_history_months=args.signal_history_months)
+    print(
+        f"\n--- upsert 페이로드(미리보기, monthly_signals {len(payload['monthly_signals'])}행) ---"
+    )
     print(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
 
     if args.dry_run:
@@ -143,8 +152,11 @@ def main() -> int:
         return 1
 
     client = make_client(url, key)
-    upsert_all(client, result)
-    print("\n✅ Supabase upsert 완료 (monthly_signals / backtest_summaries / walk_forward_results)")
+    upsert_all(client, result, signal_history_months=args.signal_history_months)
+    print(
+        f"\n✅ Supabase upsert 완료 (monthly_signals {len(payload['monthly_signals'])}행 / "
+        "backtest_summaries / walk_forward_results)"
+    )
     return 0
 
 

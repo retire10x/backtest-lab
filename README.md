@@ -42,11 +42,19 @@ Supabase 키를 아직 설정하지 않아도 빌드는 됩니다 — 페이지�
 
 ## 3. 배포 (Vercel)
 
-1. 이 저장소를 GitHub에 올리고 Vercel에서 Import.
-2. Vercel 프로젝트 환경변수에 `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` 추가.
-3. `@astrojs/vercel` 서버리스 어댑터를 쓰므로 별도 빌드 설정 없이 자동 인식됩니다.
-4. 각 데이터 페이지(`/signal`, `/backtest`)는 `Cache-Control: s-maxage=3600`
-   로 응답하므로, DB를 갱신해도 재배포 없이 최대 1시간 내로 반영됩니다.
+저장소: https://github.com/retire10x/backtest-lab
+
+1. [vercel.com](https://vercel.com)에서 GitHub 저장소 Import  
+   (또는 로컬: `npx vercel login` → `npx vercel --prod`).
+2. 프로젝트 Environment Variables에 **이것만** 추가 (Production/Preview 모두):
+   - `PUBLIC_SUPABASE_URL` — `https://xxxx.supabase.co` (`/rest/v1` 없이)
+   - `PUBLIC_SUPABASE_ANON_KEY` — Publishable(anon) 키
+3. `SUPABASE_SERVICE_ROLE_KEY` / secret / DB 비밀번호는 **절대 넣지 말 것**
+   (쓰기는 `updater/` 로컬·별도 환경에서만).
+4. Framework Preset은 Astro, `@astrojs/vercel` 어댑터가 자동 인식됩니다.
+5. 홈(`/`) 데이터가 `Cache-Control: s-maxage=3600` 이라 DB 갱신 후
+   최대 약 1시간 안에 CDN에 반영됩니다. 배포 후 `/#history`에 12행이
+   보이는지 확인하세요.
 
 ## 4. 데이터 업데이트 (`updater/`)
 

@@ -6,6 +6,132 @@
 
 ---
 
+## 2026-08-12 13:15 (작성자: Claude Code)
+**한 일**: Cowork 쉬운 문구 변경분 확인 후, 홈 통합·updater 12개월·문구
+수정·dev_log를 한 커밋으로 푸시. 배포 준비까지 진행.
+- 확인: 홈 한 페이지 스크롤, `#history` 12개월 표, Disclaimer 유지, `npm run build` 성공
+- 규제 톤: 라벨 "지금 사면 좋은 쪽" → "이번 달 선택"으로만 완화(나머지 쉬운 말투 유지)
+- Vercel CLI는 미로그인 상태 — 디바이스 로그인 필요
+
+**왜**: 지인용 쉬운 문구를 원격에 올리고, 배포만 하면 되게 만들기.
+
+**결과/남은 이슈**: 코드는 GitHub `main`에 올림. Vercel 프로젝트 연결·
+환경변수(`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`)·배포는
+Vercel 로그인 후 이어서 하면 됨. secret 키는 Vercel에 넣지 말 것.
+
+**다음 담당자에게 / 사용자**: `npx vercel login` 후 Import(GitHub
+`retire10x/backtest-lab`) 또는 `npx vercel --prod` 로 배포.
+
+---
+
+## 2026-08-12 (작성자: Cowork) — 문구 쉽게 다시 쓰기
+
+**한 일**: 사용자가 지인들에게 공유했는데 "어려워서" 반응이 없었다고
+해서, `src/pages/index.astro` 문구를 전부 쉬운 말로 다시 썼다.
+"듀얼 모멘텀", "CAGR", "MDD", "워크포워드", "절대모멘텀" 같은 용어를
+제목/라벨에서 빼고 "이번 달엔 뭘 살까?", "1년에 평균 몇 % 벌었나",
+"가장 크게 떨어졌을 때", "해마다 다시 시작했다면?" 식으로 바꿈. 맨
+위에 "왜 이렇게 할까요?" 문단을 추가해 모멘텀 개념을 비유로 설명.
+데이터 로직/컴포넌트 구조는 그대로(같은 쿼리, 같은 섹션 id) — 텍스트만
+교체. `BaseLayout` 상단 메뉴 문구도 맞춰서 변경.
+
+**왜**: 내용이 정확해도 안 읽히면 소용없다는 사용자 피드백.
+
+**결과/남은 이슈**: 로컬 빌드·렌더링 확인 완료(텍스트 교체만, 스키마·쿼리
+변경 없음). 위 Claude Code 항목의 "홈 통합·updater 수정분 커밋/푸시"
+할 때 이번 문구 변경분도 같이 커밋해야 함 — 아직 uncommitted 상태.
+
+**다음 담당자에게**: 다음 커밋 때 이 변경분도 같이 올리고 Vercel
+재배포. 실제 배포본에서 지인들 반응이 나아졌는지는 사용자가 직접
+확인해야 함.
+
+---
+
+## 2026-08-12 13:05 (작성자: Claude Code)
+**한 일**: Cowork 요청대로 `updater/run_update.py`를 재실행해
+`monthly_signals` 최근 12개월을 실제 Supabase에 upsert했다.
+- ETF: `WorkerAI/output/etf_history`
+- 적재 기간: 2025-09-30 ~ 2026-08-10 (12행), 전부 selected=kospi
+- publishable 키 SELECT로 12건 확인
+- 로컬 `npm run dev` 후 `/` `#history` HTML에서 history-table 데이터 행 12개
+  (날짜 12개) 렌더 확인
+
+**왜**: 사이트 "최근 12개월 비교"가 DB에 1건만 있어 표가 비어 보이는
+문제를 해소.
+
+**결과/남은 이슈**: DB/로컬 렌더는 OK. Vercel 미배포면 프로덕션에는
+아직 구코드·구데이터가 남을 수 있음 — 사이트의 홈 통합 커밋이 원격에
+없다면 푸시+재배포 필요. (로컬 working tree에 Cowork 변경이 아직
+uncommitted로 남아 있음)
+
+**다음 담당자에게**: 홈 통합·updater 12개월 수정분이 아직 커밋/푸시
+전이면 커밋 후 Vercel 재배포. 배포 후 `/#history` 12행 한 번 더 확인.
+
+---
+
+## 2026-08-12 (작성자: Cowork)
+
+**한 일**: `updater/`가 지금까지 `monthly_signals`에 **최신 1건만**
+upsert하고 있어서, 사이트 "최근 12개월 비교" 표에 실제로는 1행만
+뜨는 문제를 고쳤다.
+- `dual_momentum/db.py`: `monthly_signal_rows()` 추가 — 이미
+  메모리에 있던 `result["signals"]`(전체 기간 월말 신호 DataFrame,
+  `backtest.py`가 항상 계산해두던 값인데 안 쓰고 있었음)의 마지막
+  N개월을 `monthly_signals` 행으로 변환. `upsert_payload`/`upsert_all`이
+  이제 리스트를 받아 `walk_forward_results`처럼 벌크 upsert.
+- `run_update.py`: `--signal-history-months`(기본 12) 옵션 추가.
+- dry-run으로 검증: `--etf-dir WorkerAI/output/etf_history
+  --signal-history-months 12` → monthly_signals 12행
+  (2025-09-30 ~ 2026-08-10) 정상 생성 확인. 스키마/DB 쓰기 방식
+  변경 없음(같은 테이블, on_conflict 키도 기존과 동일).
+
+**왜**: 사용자가 "이번 달 신호"뿐 아니라 "최근 12개월 비교"를 보고
+싶어했고(사이트에 이미 표는 만들어져 있었음), 실제 DB에 12개월치
+데이터가 없어서 표에 1행만 표시되고 있었다.
+
+**결과/남은 이슈**: 이 환경(Cowork)에서는 Supabase로 네트워크가
+안 뚫려서 실제 upsert는 못 해봤다(dry-run만 확인). 지난번 최초
+데이터 적재는 Claude Code 환경에서 됐으니, 이번에도 거기서 실행해야
+할 것 같다.
+
+**다음 담당자에게(Claude Code)**: `updater/.env` 채워진 상태에서
+`python run_update.py --etf-dir <ETF CSV 경로>` 한 번만 다시
+실행해줘(옵션 기본값이 12개월이라 플래그 안 줘도 됨). 끝나면 사이트
+`/`의 "최근 12개월 비교" 표에 12행이 뜨는지 확인 부탁.
+
+---
+
+## 2026-08-11 (작성자: Cowork)
+
+**한 일**: 4개 페이지(`/`, `/strategy/dual-momentum`, `/signal`,
+`/backtest`)를 홈(`/`) 한 페이지 스크롤 구조로 통합. 섹션:
+이번 달 신호 → 최근 12개월 비교(신규) → 백테스트 성과 → 규칙·한계.
+프로즈(탐색 과정 상세 등)는 줄이고 핵심만 남김. 기존 3개 페이지
+경로는 삭제 대신 `/#섹션`으로 301 리다이렉트하는 스텁으로 교체(이
+환경에서 파일 삭제가 막혀 있어 내용만 리다이렉트로 교체함 — 필요하면
+Claude Code가 실제 삭제해도 됨). `BaseLayout` 상단 네비를 페이지
+링크에서 앵커 링크로 변경.
+
+**왜**: 사용자가 "4개 페이지를 하나로 합쳐서 스크롤로 보고 싶다",
+"12개월 수익률 비교가 매월말 계산되니 최근 12번의 월별 비교도
+보여달라"고 요청. 기존 `getSignalHistory(12)`가 이미 그 데이터를
+가져오고 있었어서(신호 페이지에 있었음), 홈으로 옮기고 각 자산
+수익률을 막대(bar) + %로 같이 보여주도록 보강.
+
+**결과/남은 이슈**: 로컬 빌드/렌더링 확인 완료(env 없이 4개 라우트
+정상 — `/`은 200, 기존 3개 경로는 301). 실제 Supabase 데이터로는
+이 환경에서 네트워크 제약 때문에 확인 못 함 — Vercel 배포 후
+`/#history` 섹션에 12행이 정상적으로 뜨는지 눈으로 한 번 확인
+필요.
+
+**다음 담당자에게**: Vercel에 재배포하면 반영됨(코드만 바뀜, 스키마
+변경 없음). 여유 있으면 `src/pages/signal.astro`,
+`src/pages/backtest.astro`, `src/pages/strategy/dual-momentum.astro`
+리다이렉트 스텁을 실제 삭제해서 정리해도 됨(선택, 안 지워도 동작엔
+지장 없음).
+
+---
+
 ## 2026-08-11 17:20 (작성자: Claude Code)
 **한 일**: 사용자가 Supabase URL/키를 채운 뒤 최초 데이터 적재까지 완료.
 - `updater/run_update.py`로 3테이블 upsert 성공 (신호 2026-08-10 kospi, CAGR 15.2%).
