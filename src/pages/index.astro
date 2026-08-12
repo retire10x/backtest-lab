@@ -52,6 +52,12 @@ function barWidth(v: number): string {
   description="코스피200(주식)과 국채3년물(채권) 중 최근 1년간 더 잘 나간 쪽을 매달 알려드리는 무료 참고용 사이트. 실제 백테스트 성과도 숨김없이 공개합니다."
 >
   <h1>이번 달엔 뭘 살까? — 코스피200 vs 국채3년물</h1>
+  <div class="view-toggle-wrap">
+    <button type="button" id="view-toggle" class="view-toggle" aria-pressed="false">
+      자세히 보기
+    </button>
+    <span class="view-toggle-hint" id="view-toggle-hint">지금: 간단 보기</span>
+  </div>
   <p>
     이 사이트가 하는 일은 딱 하나예요. <strong>코스피200</strong>(한국
     대표 주식 200개를 묶어놓은 상품)과 <strong>국채3년물</strong>(나라가
@@ -61,7 +67,7 @@ function barWidth(v: number): string {
     참고용이며, 실제로 사고파는 건 여러분이 직접 본인 계좌에서
     판단해서 해야 합니다.
   </p>
-  <p style="color:var(--muted);font-size:0.92rem;">
+  <p class="detail-only" style="color:var(--muted);font-size:0.92rem;">
     <strong>왜 이렇게 할까요?</strong> "최근에 잘 나가던 게 당분간은
     계속 잘 나갈 가능성이 조금 더 높다"는 관찰(투자 용어로는
     "모멘텀")에 기대는 방법이에요. 그래서 매달 말에 최근 1년 성적을
@@ -69,7 +75,7 @@ function barWidth(v: number): string {
     "최근 1등한 애를 따라간다" 정도로 이해하시면 됩니다.
   </p>
 
-  <nav class="jump-nav">
+  <nav class="jump-nav detail-only">
     <a href="#signal">이번 달엔 뭘?</a>
     <a href="#history">최근 1년 흐름</a>
     <a href="#backtest">그동안 성적은?</a>
@@ -129,12 +135,18 @@ function barWidth(v: number): string {
     }
   </section>
 
-  <section id="history">
+  <section id="history" class="detail-only">
     <h2>최근 1년 동안 어떻게 바뀌어 왔나요?</h2>
     <p style="color:var(--muted);font-size:0.9rem;">
       매달 말마다 "그 시점 기준 최근 1년 성적"을 다시 계산해요. 아래는
       최근 12번(약 1년치) 계산 결과예요. 막대가 길수록 많이 오르거나
       내렸다는 뜻이고, 초록은 플러스, 빨강은 마이너스입니다.
+    </p>
+    <p style="color:var(--muted);font-size:0.85rem;background:#f6f6f6;padding:0.6rem 0.8rem;border-radius:8px;">
+      숫자가 유난히 커 보이나요? 오류가 아니에요. 2026년 코스피가
+      사상 처음 8,000선을 넘었다가 크게 출렁인 특수한 시기라, 코스피200
+      수익률이 이례적으로 높게 나옵니다. 이런 시기가 항상 반복되는
+      건 아니라는 점을 감안해서 보세요.
     </p>
 
     {
@@ -232,40 +244,42 @@ function barWidth(v: number): string {
             꼭 같이 봐야 하는 숫자입니다.
           </p>
 
-          <h3>다른 선택지와 비교하면?</h3>
-          <table>
-            <thead>
-              <tr><th>방법</th><th>1년 평균 수익률</th><th>가장 크게 떨어졌을 때</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>이 방법(코스피200 ↔ 국채3년물)</td>
-                <td>{pct(summary.cagr)}</td>
-                <td>{pct(summary.mdd)}</td>
-              </tr>
-              <tr>
-                <td>그냥 아무 주식이나 사서 계속 들고만 있었다면</td>
-                <td>{pct(summary.passive_benchmark_cagr)}</td>
-                <td>{pct(summary.passive_benchmark_mdd)}</td>
-              </tr>
-              <tr>
-                <td>그냥 은행 정기예금에 넣어뒀다면</td>
-                <td>{pct(summary.savings_bank_rate)}</td>
-                <td>0.0%</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="detail-only">
+            <h3>다른 선택지와 비교하면?</h3>
+            <table>
+              <thead>
+                <tr><th>방법</th><th>1년 평균 수익률</th><th>가장 크게 떨어졌을 때</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>이 방법(코스피200 ↔ 국채3년물)</td>
+                  <td>{pct(summary.cagr)}</td>
+                  <td>{pct(summary.mdd)}</td>
+                </tr>
+                <tr>
+                  <td>그냥 아무 주식이나 사서 계속 들고만 있었다면</td>
+                  <td>{pct(summary.passive_benchmark_cagr)}</td>
+                  <td>{pct(summary.passive_benchmark_mdd)}</td>
+                </tr>
+                <tr>
+                  <td>그냥 은행 정기예금에 넣어뒀다면</td>
+                  <td>{pct(summary.savings_bank_rate)}</td>
+                  <td>0.0%</td>
+                </tr>
+              </tbody>
+            </table>
 
-          {summary.verdict_note && (
-            <p><strong>쉽게 말하면:</strong> {summary.verdict_note}</p>
-          )}
+            {summary.verdict_note && (
+              <p><strong>쉽게 말하면:</strong> {summary.verdict_note}</p>
+            )}
+          </div>
         </>
       )
     }
 
     {
       wf.length > 0 && (
-        <>
+        <div class="detail-only">
           <h3>해마다 다시 시작했다면?</h3>
           <p style="color:var(--muted);font-size:0.9rem;">
             매년 1월 1일에 처음부터 다시 시작했다고 가정하고, 그 해
@@ -293,12 +307,12 @@ function barWidth(v: number): string {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       )
     }
   </section>
 
-  <section id="strategy">
+  <section id="strategy" class="detail-only">
     <h2>어떻게 계산하나요? 조심해야 할 점은?</h2>
     <p style="color:var(--muted);font-size:0.9rem;">
       복잡한 조정 없이, 아래 4가지 규칙만 그대로 반복해요. 상황 봐가며
@@ -310,6 +324,15 @@ function barWidth(v: number): string {
       <li>둘 다 마이너스면(둘 다 안 좋으면) 그냥 현금을 들고 있으라고 알려준다.</li>
       <li>이 판단은 한 달에 딱 한 번만 한다 — 하루하루 흔들리지 않는다.</li>
     </ol>
+    <p style="color:var(--muted);font-size:0.9rem;background:#f6f6f6;padding:0.6rem 0.8rem;border-radius:8px;">
+      <strong>Q. 고점에서 확 떨어지면 바로 현금으로 안 바꾸나요?</strong><br />
+      안 바꿉니다. 이 규칙은 "요즘 얼마나 떨어졌나"가 아니라
+      "정확히 1년 전 가격과 비교해서 여전히 이기고 있나"만 봐요. 최근
+      고점 대비 크게 빠졌어도, 1년 전 가격 자체가 지금보다 훨씬
+      낮았다면 여전히 "1년 전보다 높다"로 계산돼서 계속 들고
+      있으라고 나올 수 있어요. 하락 초입엔 반응이 느리다는 뜻이고,
+      이건 이 방법의 실제 한계입니다.
+    </p>
     <p>
       <strong>이 방법의 한계.</strong> 최근 몇 년 상승장에서 성적이
       특히 좋았던 편이라, 앞으로도 똑같이 잘될 거라는 보장은 없어요.
@@ -324,4 +347,36 @@ function barWidth(v: number): string {
   </section>
 
   <Disclaimer />
+
+  <script>
+    const STORAGE_KEY = 'bl-view-mode';
+    const btn = document.getElementById('view-toggle');
+    const hint = document.getElementById('view-toggle-hint');
+
+    function isDetail() {
+      return document.body.classList.contains('mode-detail');
+    }
+
+    function applyMode(detail: boolean) {
+      document.body.classList.toggle('mode-detail', detail);
+      document.body.classList.toggle('mode-simple', !detail);
+      if (btn) {
+        btn.textContent = detail ? '간단히 보기' : '자세히 보기';
+        btn.setAttribute('aria-pressed', detail ? 'true' : 'false');
+      }
+      if (hint) {
+        hint.textContent = detail ? '지금: 자세히 보기' : '지금: 간단 보기';
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, detail ? 'detail' : 'simple');
+      } catch (_) {}
+    }
+
+    // 인라인 스크립트가 복원한 상태와 버튼 라벨을 맞춤
+    applyMode(isDetail());
+
+    btn?.addEventListener('click', () => {
+      applyMode(!isDetail());
+    });
+  </script>
 </BaseLayout>

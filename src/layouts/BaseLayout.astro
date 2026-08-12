@@ -2,10 +2,13 @@
 export interface Props {
   title: string;
   description?: string;
+  /** 기본은 간단 보기. JS 없이도 detail-only 가 숨겨지도록 body에 박아 둔다. */
+  bodyClass?: string;
 }
 const {
   title,
   description = '소액 개인 투자자를 위한, 검증 중심의 정직한 백테스트 정보 사이트.',
+  bodyClass = 'mode-simple',
 } = Astro.props;
 ---
 
@@ -17,13 +20,24 @@ const {
     <meta name="description" content={description} />
     <title>{title} · backtest-lab</title>
   </head>
-  <body>
+  <body class={bodyClass}>
+    <script is:inline>
+      // 재방문 시 마지막 선택 복원. 저장된 값 없으면 서버가 준 mode-simple 유지.
+      (function () {
+        try {
+          if (localStorage.getItem('bl-view-mode') === 'detail') {
+            document.body.classList.remove('mode-simple');
+            document.body.classList.add('mode-detail');
+          }
+        } catch (_) {}
+      })();
+    </script>
     <header class="site-header">
       <nav class="container">
         <a class="brand" href="/">backtest-lab</a>
         <div class="links">
           <a href="/#signal">이번 달엔 뭘?</a>
-          <a href="/#history">최근 1년 흐름</a>
+          <a class="detail-only" href="/#history">최근 1년 흐름</a>
           <a href="/#backtest">그동안 성적은?</a>
         </div>
       </nav>
@@ -91,6 +105,36 @@ const {
       .jump-nav a:hover {
         border-color: var(--accent);
         color: var(--accent);
+      }
+      /* 간단 보기: detail-only 숨김 (SSR 기본도 mode-simple) */
+      body.mode-simple .detail-only {
+        display: none !important;
+      }
+      .view-toggle-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1rem 0 0.25rem;
+        flex-wrap: wrap;
+      }
+      .view-toggle {
+        appearance: none;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #fff;
+        font: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.55rem 1.1rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .view-toggle:hover {
+        filter: brightness(1.05);
+      }
+      .view-toggle-hint {
+        color: var(--muted);
+        font-size: 0.85rem;
       }
       .history-table td {
         vertical-align: middle;
