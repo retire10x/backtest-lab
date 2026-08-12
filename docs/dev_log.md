@@ -6,6 +6,21 @@
 
 ---
 
+## 2026-08-12 13:35 (작성자: Claude Code)
+**한 일**: Vercel 배포 실패(`_render` runtime `nodejs18.x` invalid) 수정.
+- 원인: `@astrojs/vercel@7`가 Node 18로 폴백하는데 Vercel이 18 런타임 폐기.
+- `astro@^5` + `@astrojs/vercel@^9`로 업그레이드, adapter import를
+  `@astrojs/vercel`로 정리, `engines.node >=22` 추가.
+- 로컬 빌드 확인: `.vc-config.json` runtime = `nodejs22.x`.
+
+**왜**: 배포 로그에 invalid runtime으로 막혀 프로덕션 URL이 안 나옴.
+
+**결과/남은 이슈**: 수정분 푸시 후 Vercel 재배포하면 됨. 환경변수
+(`PUBLIC_SUPABASE_*`)가 Production에 들어갔는지 배포 URL에서
+`/#history` 12행으로 확인.
+
+---
+
 ## 2026-08-12 13:15 (작성자: Claude Code)
 **한 일**: Cowork 쉬운 문구 변경분 확인 후, 홈 통합·updater 12개월·문구
 수정·dev_log를 한 커밋으로 푸시. 배포 준비까지 진행.

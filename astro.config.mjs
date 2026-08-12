@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 // 서버 출력 모드: Supabase 데이터를 요청 시점에 읽어서 렌더링한다.
 // (별도 프로그램이 DB를 갱신하면, 재배포 없이도 다음 요청부터 반영됨)

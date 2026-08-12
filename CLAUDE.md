@@ -43,7 +43,7 @@
 
 ## 기술 스택 (확정)
 
-- **프론트/사이트**: Astro (`output: 'server'`, `@astrojs/vercel` 어댑터)
+- **프론트/사이트**: Astro 5 (`output: 'server'`, `@astrojs/vercel` 어댑터, Node 22)
 - **DB**: Supabase (Postgres, 무료 티어) — anon 키는 읽기 전용(RLS로
   강제), 쓰기는 service_role 키를 쓰는 별도 업데이트 프로그램만.
 - **호스팅**: Vercel (무료)

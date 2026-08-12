@@ -3,6 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -10,8 +13,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/vercel": "^7.8.2",
+    "@astrojs/vercel": "^9.0.5",
     "@supabase/supabase-js": "^2.45.4",
-    "astro": "^4.16.7"
+    "astro": "^5.18.2"
   }
 }
